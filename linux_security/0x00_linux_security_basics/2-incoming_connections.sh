@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo ufw allow 80/tcp
+sudo ufw allow from "$1" to any port 80 proto tcp
