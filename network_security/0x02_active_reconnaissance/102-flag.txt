@@ -1,0 +1,4 @@
+admin
+password1@ZMI9MB6A
+
+is the info im getting but it wont let me log in
