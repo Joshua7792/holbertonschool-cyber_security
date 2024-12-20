@@ -1,4 +1,1 @@
-admin
-password1@ZMI9MB6A
-
-is the info im getting but it wont let me log in
+c605d4ec959b3b534392977820454c7e
