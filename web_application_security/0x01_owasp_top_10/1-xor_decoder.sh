@@ -1,33 +1,36 @@
 #!/bin/bash
 
-# Check if the argument is provided
-if [ -z "$1" ]; then
-  echo "Usage: ./1-xor_decoder.sh {xor}encoded_string"
-  exit 1
+# This script decodes an XOR encoded base64 string
+
+# Check if the correct number of arguments is provided
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <encoded_string>"
+    exit 1
 fi
 
-# Remove the {xor} prefix
-encoded=$(echo "$1" | sed 's/{xor}//')
+# Extract the base64-encoded string from the input
+password="${1#'{xor}'}"
 
-# Base64 decode the input
-decoded=$(echo "$encoded" | base64 -d 2>/dev/null)
+# Decode the base64-encoded string
+decoded_password=$(echo -n "$password" | base64 -d 2>/dev/null | tr -d '\000')
 
-# Check if base64 decoding succeeded
+# Check if base64 decoding was successful
 if [ $? -ne 0 ]; then
-  echo "Error: Invalid Base64 input."
-  exit 1
+    echo "Error: Invalid base64 encoding"
+    exit 1
 fi
 
-# Define XOR key (you can modify this based on the actual key)
-key=95
+# Initialize the XOR-decoded password variable
+decoded_password_xor=""
 
-# Perform XOR decoding by looping through each character
-decoded_message=""
-for (( i=0; i<${#decoded}; i++ )); do
-    char=$(printf "%d" "'${decoded:$i:1}")  # Get ASCII value of each char
-    xor_char=$(($char ^ $key))              # XOR with the key
-    decoded_message+=$(printf \\$(printf '%03o' "$xor_char"))  # Convert back to character
+# XOR decode each byte
+for byte in $(echo -n "$decoded_password" | od -An -t x1); do
+    # Convert byte from hex to decimal and apply XOR
+    xor_result=$(( 16#$byte ^ 95 ))
+
+    # Convert the result back to a character and append it
+    decoded_password_xor+=$(printf "\\x$(printf '%x' $xor_result)")
 done
 
-# Output the decoded message
-echo "$decoded_message"
+# Output the decoded password, handling null bytes
+echo -e "$decoded_password_xor"
