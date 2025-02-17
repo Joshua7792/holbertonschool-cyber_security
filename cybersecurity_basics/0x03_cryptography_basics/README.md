@@ -70,4 +70,3 @@ cybersecurity_basics/
 
 ## Additional Tasks
 More cryptographic tasks will be added soon.
-
