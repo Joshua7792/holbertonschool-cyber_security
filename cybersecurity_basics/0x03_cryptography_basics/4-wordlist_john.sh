@@ -1,0 +1,2 @@
+#!/bin/bash
+[ -z "$1" ] && echo "Usage: $0 <hash_file>" && exit 1 || john --format=Raw-MD5 --wordlist=/snap/seclists/737/Passwords/Leaked-Databases/rockyou-20.txt "$1" && john "$1" --show | cut -d':' -f2 > 4-password.txt
