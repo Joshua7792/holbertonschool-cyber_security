@@ -1,4 +1,4 @@
-"# Protocols and Servers Project
+### Protocols and Servers Project
 
 This repository contains scripts for auditing and securing Linux servers by checking various network protocols and configurations.
 
@@ -14,19 +14,6 @@ This repository contains scripts for auditing and securing Linux servers by chec
 - **7-dos.sh** - Simulate a basic DoS attack on an HTTP server.
 - **8-cipher.sh** - Test SSL/TLS server ciphers for weaknesses using Nmap.
 - **9-firewall.sh** - Set up a basic iptables firewall that blocks all incoming traffic except SSH.
-
-## Usage
-Each script should be run with sudo privileges where required. For example:
-
-\`\`\`
-sudo ./0-iptables.sh
-\`\`\`
-
-Ensure all scripts are executable:
-
-\`\`\`
-chmod +x *.sh
-\`\`\`
 
 ## Requirements
 - Scripts should run on Kali Linux 2023.2
